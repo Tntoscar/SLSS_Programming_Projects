@@ -21,16 +21,14 @@ for y in range(image_height):
         pixel = image.getpixel((x, y))
 
      # grab r, g , b
-        red = pixel[0]
-        green = pixel[1]
-        blue = pixel[2]
+        red, green, blue = pixel
 
      # calculate the average
-    average = int((red + green + blue) / 3)
+        average = int((red + green + blue) / 3)
 
     # create a gray pixel
-    gray_pixel = (average, average, average)
+        gray_pixel = (average, average, average)
 
-output_image.putpixel((x, y), gray_pixel)
+        output_image.putpixel((x, y), gray_pixel)
 
 output_image.save('grayscale.jpg')
