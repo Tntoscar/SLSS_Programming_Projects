@@ -27,11 +27,7 @@ class vehicle:
 class Bus(vehicle):
     """Bus is a Vehicle that can drive
     humans around in it"""
-
-    class Bus(vehicle):
-        """Bus is a Vehicle that can drive
-        humans around in it"""
-         def fare(self, age: int) -> None:
+    def fare(self, age: int) -> None:
             """Tells how much fare is for a particular age"""
             if 18 <= age <= 60:
                 print("The fare of this bus ride is $5.00")
