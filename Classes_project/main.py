@@ -32,7 +32,7 @@ class Bus(vehicle):
             if 18 <= age <= 60:
                 print("The fare of this bus ride is $5.00")
             else:
-                print("You ride free!")
+                print("You ride free! You are lucky")
 
 
 a_vehicle = vehicle("Toyota", 372, 2)
