@@ -27,29 +27,33 @@ class vehicle:
 class Bus(vehicle):
     """Bus is a Vehicle that can drive
     humans around in it"""
-    def fare(selfself, age: int) -> None:
-        """Tells how much the fare is for a partically person"""
-        if age <= 0 and <= 17:
-            print("You ride free")
-        elif age < 61:
-            print("The fare of this bus is $5.00")
-        else:
-            print(" You ride free")
+
+    class Bus(vehicle):
+        """Bus is a Vehicle that can drive
+        humans around in it"""
+         def fare(self, age: int) -> None:
+            """Tells how much fare is for a particular age"""
+            if 18 <= age <= 60:
+                print("The fare of this bus ride is $5.00")
+            else:
+                print("You ride free!")
 
 
-a_vehicle = vehicle()
-a_vehicle = "Toyota"
-a_vehicle.max_speed = 372
-a_vehicle.capacity = 2
+a_vehicle = vehicle("Toyota", 372, 2)
 a_vehicle.vroom()
 
-a_bus = Bus()
+a_bus = Bus("Tranklink Bus - 407", 35, 140)
 a_bus.name = "Tranlink Bus - 407"
-a_bus.capacity = 35
-a_bus.max_speed = 140
 
 a_bus.fare(10)
-
+a_bus.fare(10)
+print()
+a_bus.fare(-1)
+a_bus.fare(0)
+a_bus.fare(17)
+a_bus.fare(18)
+a_bus.fare(60)
+a_bus.fare(61)
 
 
 
