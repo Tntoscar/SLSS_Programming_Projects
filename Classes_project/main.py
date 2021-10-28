@@ -15,17 +15,42 @@ class vehicle:
     """
     def __init__(self, name: str, capacity: int, max_speed: int):
         """Creates a new vehicle with new default values"""
-        self.name = vehicle
-        self.max_speed = max_speed
-        self.capacity = capacity
+        self.name = ""
+        self.max_speed = 0
+        self.capacity = 0
 
 
     def vroom(self) -> None:
         """prints vroom the number of times of max speed"""
-        for i in range(self.max_speed):
-            print("VROOMMMM!!!")
-Toyota = vehicle("Toyota", 5, 10)
-print(Toyota.max_speed)
+        print("vroom" * self.max_speed)
+
+class Bus(vehicle):
+    """Bus is a Vehicle that can drive
+    humans around in it"""
+    def fare(selfself, age: int) -> None:
+        """Tells how much the fare is for a partically person"""
+        if age <= 0 and <= 17:
+            print("You ride free")
+        elif age < 61:
+            print("The fare of this bus is $5.00")
+        else:
+            print(" You ride free")
+
+
+a_vehicle = vehicle()
+a_vehicle = "Toyota"
+a_vehicle.max_speed = 372
+a_vehicle.capacity = 2
+a_vehicle.vroom()
+
+a_bus = Bus()
+a_bus.name = "Tranlink Bus - 407"
+a_bus.capacity = 35
+a_bus.max_speed = 140
+
+a_bus.fare(10)
+
+
 
 
 
