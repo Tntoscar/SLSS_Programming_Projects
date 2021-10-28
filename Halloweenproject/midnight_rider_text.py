@@ -16,3 +16,10 @@ GON GETCHU.
 
 
 """
+
+CHOICES = """
+    ---Your choices---
+    Q. Quit the game.
+    ---
+
+"""
