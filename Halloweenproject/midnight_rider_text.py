@@ -19,6 +19,7 @@ GON GETCHU.
 
 CHOICES = """
     ---Your choices---
+    E. Current Status 
     Q. Quit the game.
     ---
 
