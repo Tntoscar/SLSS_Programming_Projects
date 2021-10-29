@@ -1,11 +1,14 @@
 # Midnight Rider
 
+import random
 import sys
 import textwrap
 import time
 import midnight_rider_text
 
-
+# constants
+MAX_FUEL = 50
+MAX_CHIPS = 3
 
 # A text - based game of intrigue and illusion
 
@@ -20,18 +23,18 @@ class Game:
             in km
         amount_of_chips: how much chips we have
             left in our inventory
-        agent_distance: describes the distance
-            between the player and the agents
-
-
+        agent_distance: describes
+        the distance between the player and the agents
+        fuel: describes the amount of fuel remaining ,
+        starts off at 50
     """
 
     def __init__(self):
         self.done = False
         self.distance_traveled = 0
-        self.amount_chips = 3
+        self.amount_chips = MAX_CHIPS
         self.agents_distance = -20
-
+        self.fuel = MAX_FUEL
     def introduction(self) -> None:
         """Print the introduction text"""
         self.typewriter_effect(midnight_rider_text.INTRODUCTION)
@@ -56,13 +59,22 @@ class Game:
         user_choice = input().strip("<>?!").lower()
         # Based on their choice, change the attribute
         # of their class
-        if user_choice == "e":
+        if user_choice == "d":
+            self.fuel = MAX_FUEL
+
+            #decide how far the agents go
+            self.agents_distance += random.randrange(7, 15)
+            #Give the user feedback
+            print(midnight_rider_text.REFUEL)
+            time.sleep(2)
+        elif user_choice == "e":
             print("---Status Check---")
             print(f"Distance Traveled:{self.distance_traveled}kms")
+            print(f"Fuel remaining: {self.fuel} L")
             print(f"Chips left {self.amount_chips}")
             print(f"Agent's Distance: {abs(self.agents_distance)} km behind")
             print("---")
-
+            time.sleep(2)
         elif user_choice == "q":
             self.done = True
 
