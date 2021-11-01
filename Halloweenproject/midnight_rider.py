@@ -59,12 +59,36 @@ class Game:
         user_choice = input().strip("<>?!").lower()
         # Based on their choice, change the attribute
         # of their class
-        if user_choice == "d":
-            self.fuel = MAX_FUEL
+       # TODO: implement eaitng/hunger
+        agents_distance_now = random.randrange(10, 16)
+        if user_choice == "b":
+            player_distance_now = random.randrange(1, 11)
+            self.distance_traveled += player_distance_now
+            # move the agents
+            self.agents_distance += agents_distance_now - player_distance_now
+            # burn the fuel
+            self.fuel -= random.randrange(1, 10)
+            # give the player feedback
+            print(f"\n---------- You drive slow.")
+            print(f"---------- You traveled {player_distance_now} kms.\n")
 
-            #decide how far the agents go
+
+        elif user_choice == "c":
+            #move the player
+            player_distance_now = random.randrange(10, 16)
+            self.distance_traveled += player_distance_now
+            #move the agents
+            self.agents_distance += agents_distance_now - player_distance_now
+            #burn the fuel
+            self.fuel -= random.randrange(5, 11)
+            #give the player feedback
+            print(f"\n----------ZOOOOOOOOM.")
+            print(f"---------- You traveled {player_distance_now} kms.\n")
+
+        elif user_choice == "d":
+            self.fuel = MAX_FUEL
             self.agents_distance += random.randrange(7, 15)
-            #Give the user feedback
+
             print(midnight_rider_text.REFUEL)
             time.sleep(2)
         elif user_choice == "e":
