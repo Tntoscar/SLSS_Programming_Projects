@@ -9,7 +9,7 @@ import midnight_rider_text
 # constants
 MAX_FUEL = 50
 MAX_CHIPS = 3
-
+MAX_HUNGER = 50
 # A text - based game of intrigue and illusion
 
 class Game:
@@ -27,6 +27,10 @@ class Game:
         the distance between the player and the agents
         fuel: describes the amount of fuel remaining ,
         starts off at 50
+        hunger: describes how hungry our player is,
+        represented by a number between 0-50,
+        if hunger goes beyond 50, game is over.
+
     """
 
     def __init__(self):
@@ -35,6 +39,7 @@ class Game:
         self.amount_chips = MAX_CHIPS
         self.agents_distance = -20
         self.fuel = MAX_FUEL
+        self.hunger = 0
     def introduction(self) -> None:
         """Print the introduction text"""
         self.typewriter_effect(midnight_rider_text.INTRODUCTION)
@@ -59,38 +64,51 @@ class Game:
         user_choice = input().strip("<>?!").lower()
         # Based on their choice, change the attribute
         # of their class
-       # TODO: implement eaitng/hunger
         agents_distance_now = random.randrange(10, 16)
-        if user_choice == "b":
-            player_distance_now = random.randrange(1, 11)
-            self.distance_traveled += player_distance_now
-            # move the agents
-            self.agents_distance += agents_distance_now - player_distance_now
-            # burn the fuel
-            self.fuel -= random.randrange(1, 10)
-            # give the player feedback
-            print(f"\n---------- You drive slow.")
-            print(f"---------- You traveled {player_distance_now} kms.\n")
 
+        if user_choice == "a":
+            if self.amount_chips > 0:
+                self.amount_chips -= 1
+                self.hunger = 0
+                print(midnight_rider_text.EAT_TOFU)
+            else:
+                # Tell the player they don't have tofu
+                print(midnight_rider_text.NO_TOFU)
+
+
+        elif user_choice == "b":
+        # Move the player slowly
+            player_distance_now = random.randrange(5, 10)
+            self.distance_traveled += player_distance_now
+            self.agents_distance += agents_distance_now - player_distance_now
+            self.fuel -= random.randrange(3, 8)
+        # Give the player some feedback
+            print(f"\n-------You drive conservatively.")
+            print(f"-------You traveled {player_distance_now} kms.\n")
 
         elif user_choice == "c":
-            #move the player
+        # Move the player quickly
             player_distance_now = random.randrange(10, 16)
             self.distance_traveled += player_distance_now
-            #move the agents
+
+        # Move the agents
             self.agents_distance += agents_distance_now - player_distance_now
-            #burn the fuel
+
+        # Burn fuel
             self.fuel -= random.randrange(5, 11)
-            #give the player feedback
-            print(f"\n----------ZOOOOOOOOM.")
-            print(f"---------- You traveled {player_distance_now} kms.\n")
+
+        # Give the player some feedback
+            print(f"\n-------ZOOOOOOOOOOM.")
+            print(f"-------You traveled {player_distance_now} kms.\n")
 
         elif user_choice == "d":
             self.fuel = MAX_FUEL
-            self.agents_distance += random.randrange(7, 15)
+
+            self.agents_distance += agents_distance_now
 
             print(midnight_rider_text.REFUEL)
             time.sleep(2)
+
         elif user_choice == "e":
             print("---Status Check---")
             print(f"Distance Traveled:{self.distance_traveled}kms")
@@ -99,8 +117,25 @@ class Game:
             print(f"Agent's Distance: {abs(self.agents_distance)} km behind")
             print("---")
             time.sleep(2)
+
         elif user_choice == "q":
             self.done = True
+
+        if user_choice in ["b", "c", "d"]:
+            self.hunger += random.randrange(8, 18)
+
+
+    def upkeep(self) -> None:
+        """give the user reminder of hunger"""
+        # TODO: update midnight_rider_text.py
+        if self.hunger > 40:
+            print(midnight_rider_text.SEVERE_HUNGER)
+
+        elif self.hunger > 25:
+            print(midnight_rider_text.HUNGER)
+
+
+
 
 
 def main() -> None:
@@ -109,6 +144,7 @@ def main() -> None:
 
     # Main loop
     while not game.done:
+           game.upkeep()
            # Display the choices to the player
            game.show_choices()
            #  ask the player what they want to do
