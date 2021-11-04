@@ -10,7 +10,10 @@ import midnight_rider_text
 MAX_FUEL = 50
 MAX_CHIPS = 3
 MAX_HUNGER = 50
-# A text - based game of intrigue and illusion
+
+ENDGAME_REASONS = {
+    "LOSE_AGENTS": 1,
+}
 
 class Game:
     """Represent our game engine
@@ -30,7 +33,8 @@ class Game:
         hunger: describes how hungry our player is,
         represented by a number between 0-50,
         if hunger goes beyond 50, game is over.
-
+        endgame_reason: shows the index of hte game ending
+        text from midnight_rider_text.py
     """
 
     def __init__(self):
@@ -40,6 +44,8 @@ class Game:
         self.agents_distance = -20
         self.fuel = MAX_FUEL
         self.hunger = 0
+        self.endgame_reason = 0
+
     def introduction(self) -> None:
         """Print the introduction text"""
         self.typewriter_effect(midnight_rider_text.INTRODUCTION)
@@ -50,6 +56,7 @@ class Game:
             time.sleep(0.05)
             sys.stdout.write(char)
             sys.stdout.flush()
+
     def show_choices(self) -> None:
         """show the user their choices"""
         time.sleep(1)
@@ -116,17 +123,17 @@ class Game:
             print(f"Chips left {self.amount_chips}")
             print(f"Agent's Distance: {abs(self.agents_distance)} km behind")
             print("---")
-            time.sleep(2)
 
         elif user_choice == "q":
             self.done = True
+        time.sleep(2)
 
         if user_choice in ["b", "c", "d"]:
             self.hunger += random.randrange(8, 18)
 
 
     def upkeep(self) -> None:
-        """give the user reminder of hunger"""
+        """Give the user reminder of hunger"""
         # TODO: update midnight_rider_text.py
         if self.hunger > 40:
             print(midnight_rider_text.SEVERE_HUNGER)
@@ -134,23 +141,44 @@ class Game:
         elif self.hunger > 25:
             print(midnight_rider_text.HUNGER)
 
+    def check_endgame(self) -> None:
+        """CHeck to see if win/lose conditions are met.
+        If they're met, change the self.done flag."""
+        # TODO: LOSE - agents catch up to the player
+        if self.agents_distance >= 0:
+            # Allows us to quite the while loop
+            self.done = True
+           # Helps with printing the right ending
+            self.endgame_reason = ENDGAME_REASONS["LOSE_AGENTS"]
+        # TODO: Lose- Fuel runs out
+        if self.fuel <= 0:
+            self.done = True
 
+            self.endgame_reason = ENDGAME_REASONS["LOSE_FUEL"]
+        # TODO: Lose - Perish because of hunger
+        if self.hunger <= 0:
+            self.done = True
 
+            self.endgame_reason = ENDGAME_REASONS["LOSE_HUNGER"]
+        # TODO: Win - Reach the goal
 
 
 def main() -> None:
-    game = Game()    #starting a new game
+    game = Game()    # starting a new game
     # game.introduction()
 
     # Main loop
     while not game.done:
-           game.upkeep()
-           # Display the choices to the player
-           game.show_choices()
-           #  ask the player what they want to do
-           # Change the state of  the environment
-           game.get_choice()
-           # TODO: Check win/lose conditions
+        game.upkeep()
+        game.show_choices()
+        game.get_choice()
+        game.check_endgame()
+
+    time.sleep(3)
+    # print
+    game.typewriter_effect(
+        midnight_rider_text.ENDGAME_TEXT[game.endgame_reason]
+    )
 
 
 
