@@ -10,12 +10,16 @@ import midnight_rider_text
 MAX_FUEL = 50
 MAX_CHIPS = 3
 MAX_HUNGER = 50
+MAX_DISTANCE = 100
+CHIPS_REFILL_PERCENTAGES = 0.1
 
 ENDGAME_REASONS = {
     "LOSE_AGENTS": 1,
     "LOSE_FUEL": 2,
-    "LOSE_HUNGER": 3
+    "LOSE_HUNGER": 3,
+    "WIN": 4
 }
+
 
 class Game:
     """Represent our game engine
@@ -23,7 +27,7 @@ class Game:
     Attribute:
         done: describes if the game is
               finished or not -bool
-        distance_traveled: describe the dsitance
+        distance_traveled: describe the distance
             that we've traveled so far this game.
             in km
         amount_of_chips: how much chips we have
@@ -65,7 +69,6 @@ class Game:
         print(midnight_rider_text.CHOICES)
         time.sleep(1)
 
-
     def get_choice(self) -> None:
         """Gets the user's choice and changes
         the environment"""
@@ -79,14 +82,13 @@ class Game:
             if self.amount_chips > 0:
                 self.amount_chips -= 1
                 self.hunger = 0
-                print(midnight_rider_text.EAT_TOFU)
+                print(midnight_rider_text.EAT_CHIPS)
             else:
                 # Tell the player they don't have tofu
-                print(midnight_rider_text.NO_TOFU)
-
+                print(midnight_rider_text.NO_CHIPS)
 
         elif user_choice == "b":
-        # Move the player slowly
+            # Move the player slowly
             player_distance_now = random.randrange(5, 10)
             self.distance_traveled += player_distance_now
             self.agents_distance += agents_distance_now - player_distance_now
@@ -96,7 +98,7 @@ class Game:
             print(f"-------You traveled {player_distance_now} kms.\n")
 
         elif user_choice == "c":
-        # Move the player quickly
+            # Move the player quickly
             player_distance_now = random.randrange(10, 16)
             self.distance_traveled += player_distance_now
 
@@ -120,7 +122,7 @@ class Game:
 
         elif user_choice == "e":
             print("---Status Check---")
-            print(f"Distance Traveled:{self.distance_traveled}kms")
+            print(f"Distance Traveled:{self.distance_traveled} kms")
             print(f"Fuel remaining: {self.fuel} L")
             print(f"Chips left {self.amount_chips}")
             print(f"Agent's Distance: {abs(self.agents_distance)} km behind")
@@ -133,15 +135,23 @@ class Game:
         if user_choice in ["b", "c", "d"]:
             self.hunger += random.randrange(8, 18)
 
-
     def upkeep(self) -> None:
-        """Give the user reminder of hunger"""
-        # TODO: update midnight_rider_text.py
+        """Give the user reminder of hunger
+
+        process random events"""
         if self.hunger > 40:
             print(midnight_rider_text.SEVERE_HUNGER)
 
         elif self.hunger > 25:
             print(midnight_rider_text.HUNGER)
+
+        # A percentage of time, the chips bag is filled
+        # by the dog
+        if random.random() <= CHIPS_REFILL_PERCENTAGES and self.amount_chips < MAX_CHIPS:
+            # refill the tofu
+            self.amount_chips = MAX_CHIPS
+            # display some text
+            print(midnight_rider_text.REFILL_CHIPS)
 
     def check_endgame(self) -> None:
         """CHeck to see if win/lose conditions are met.
@@ -149,24 +159,28 @@ class Game:
         if self.agents_distance >= 0:
             # Allows us to quite the while loop
             self.done = True
-           # Helps with printing the right ending
+            # Helps with printing the right ending
             self.endgame_reason = ENDGAME_REASONS["LOSE_AGENTS"]
 
         if self.fuel <= 0:
             self.done = True
 
             self.endgame_reason = ENDGAME_REASONS["LOSE_FUEL"]
-        # TODO: Lose - Perish because of hunger
+
         if self.hunger > MAX_HUNGER:
             self.done = True
 
             self.endgame_reason = ENDGAME_REASONS["LOSE_HUNGER"]
-        # TODO: Win - Reach the goal
+
+        if self.distance_traveled >= MAX_DISTANCE:
+            self.done = True
+
+            self.endgame_reason = ENDGAME_REASONS["WIN"]
 
 
 def main() -> None:
     game = Game()    # starting a new game
-    # game.introduction()
+    game.introduction()
 
     # Main loop
     while not game.done:
@@ -180,7 +194,6 @@ def main() -> None:
     game.typewriter_effect(
         midnight_rider_text.ENDGAME_TEXT[game.endgame_reason]
     )
-
 
 
 if __name__ == "__main__":
