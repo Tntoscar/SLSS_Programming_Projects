@@ -25,17 +25,18 @@ class Dvdimage:
 
     Attributes:
         x,y: coordinates of top-left corner
-        width: width of our rectangle in px
-        height:height of our rectangle
-        colour: 3-tuple of (r, g, b)
+        width: width of image in pixels
+        height:height of image in pixels
+        image: visual representation of our Dvdimage
         x-vel: x velocity in px/sec
         y-vel: y velocity in px/sec
     """
     def __init__(self):
         self.x, self.y = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-        self.width = 150
-        self.height = 90
-        self.colour = BLUE
+        self.width = 180
+        self.height = 180
+        self.image = pygame.image.load("./images/dvdimage.png")
+        self.image = pygame.image.load("./images/background.jpg")
         self.x_vel = 5
         self.y_vel = 3
 
@@ -47,8 +48,32 @@ class Dvdimage:
         """Updates the Dvdimage with every tick"""
         # update the x-coordinate
         self.x += self.x_vel
+        # If Dvdimage is too far to the left
+        if self.x < 0:
+            # Keep the object in the canvas
+            self.x = 0
+            # Set the velocity to the negative
+            self.x_vel = -self.x_vel
+        # If Dvdimage is too far to the right
+        if self.x + self.width > SCREEN_WIDTH:
+            # Keep the object in the canvas
+            self.x = SCREEN_WIDTH - self.width
+            # Set the velocity to the negative
+            self.x_vel = -self.x_vel
         # update the y- coordinate
         self.y += self.y_vel
+        # If Dvdimage is too far to the top
+        if self.y < 0:
+            # Keep the object in the canvas
+            self.y = 0
+            # Set the velocity to the negative
+            self.y_vel = -self.y_vel
+        # If Dvdimage is too far to the bottom
+        if self.y + self.height > SCREEN_HEIGHT:
+            # Keep the object in the canvas
+            self.y = SCREEN_HEIGHT - self.height
+            # Set the velocity to the negative
+            self.y_vel = -self.y_vel
 
 
 def main() -> None:
@@ -74,8 +99,8 @@ def main() -> None:
         print(f"x: {dvd_image.x}, y: {dvd_image.y}")
         # ----------- DRAW THE ENVIRONMENT
         screen.fill(BGCOLOUR)      # fill with bgcolor
+         screen.blit(dvd_image.image, (dvd_image.x, dvd_image.y))
 
-        pygame.draw.rect(screen, dvd_image.colour, dvd_image.rect())
         # Update the screen
         pygame.display.flip()
 
