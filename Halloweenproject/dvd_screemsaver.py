@@ -36,7 +36,6 @@ class Dvdimage:
         self.width = 180
         self.height = 180
         self.image = pygame.image.load("./images/dvdimage.png")
-        self.image = pygame.image.load("./images/background.jpg")
         self.x_vel = 5
         self.y_vel = 3
 
@@ -62,13 +61,13 @@ class Dvdimage:
             self.x_vel = -self.x_vel
         # update the y- coordinate
         self.y += self.y_vel
-        # If Dvdimage is too far to the top
+        # If Dvdimage is too far to the bottom
         if self.y < 0:
             # Keep the object in the canvas
             self.y = 0
             # Set the velocity to the negative
             self.y_vel = -self.y_vel
-        # If Dvdimage is too far to the bottom
+        # If Dvdimage is too far to the top
         if self.y + self.height > SCREEN_HEIGHT:
             # Keep the object in the canvas
             self.y = SCREEN_HEIGHT - self.height
@@ -87,6 +86,9 @@ def main() -> None:
     clock = pygame.time.Clock()
     dvd_image = Dvdimage()
 
+    bg_image = pygame.image.load("./images/background.jpg")
+    #  transform.scale
+    # bg_image = pygame.transform.scale(bg_image, (980, 540))
     # ----------- MAIN LOOP
     while not done:
         # ----------- EVENT LISTENER
@@ -96,10 +98,12 @@ def main() -> None:
 
         # ----------- CHANGE ENVIRONMENT
         dvd_image.update()
-        print(f"x: {dvd_image.x}, y: {dvd_image.y}")
         # ----------- DRAW THE ENVIRONMENT
-        screen.fill(BGCOLOUR)      # fill with bgcolor
-         screen.blit(dvd_image.image, (dvd_image.x, dvd_image.y))
+        # Draw the background image
+        screen.blit(bg_image, (0, 0))
+
+        # .blit(<surface/image>, coords)
+        screen.blit(dvd_image.image, (dvd_image.x, dvd_image.y))
 
         # Update the screen
         pygame.display.flip()
