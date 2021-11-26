@@ -119,6 +119,8 @@ class Enemy(pygame.sprite.Sprite):
         if self.rect.bottom > SCREEN_HEIGHT:
             self.rect.bottom = SCREEN_HEIGHT
             self.y_vel = -self.y_vel
+
+
 def main() -> None:
     """Driver of the Python script"""
     # Create the screen
@@ -128,7 +130,7 @@ def main() -> None:
     # Create some local variables that describe the environment
     done = False
     clock = pygame.time.Clock()
-    num_blocks = 100
+    num_blocks = 200
     num_enemies = 10
     score = 0
 
@@ -152,8 +154,7 @@ def main() -> None:
         # Add the block to the all_sprites Group
         block_sprites.add(block)
         all_sprites.add(block)
-
-   # Create enemy sprites
+    # Create enemy sprites
     for i in range(num_enemies):
         # Create an enemy
         enemy = Enemy()
