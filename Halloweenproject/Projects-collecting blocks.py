@@ -72,6 +72,36 @@ class Block(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
 
+class Enemy(pygame.sprite.Sprite):
+    """The enemy sprites
+
+    Attributes:
+        image: Surface is the visual representation
+        rect: Rect (x, y, width, height)
+        x_vel = x velocity
+        y_vel = y velocity
+    """
+    def __init__(self):
+        super().__init__()
+
+        self.image = pygame.image.load("./images/ekans.png")
+        # Resize the image (scale)
+        # self.image = pygame.transform.scale(self.image, (91, 109))
+
+        self.rect = self.image.get_rect()
+        # define the initial location
+        self.rect.x, self.rect.y = (
+            random.randrange(SCREEN_WIDTH),
+            random.randrange(SCREEN_HEIGHT)
+        )
+
+        # Define hte inital velocity
+        self.x_vel = random.choice([-4, -3, 3, 4])
+        self.y_vel = random.choice([-4, -3, 3, 4])
+
+
+
+
 def main() -> None:
     """Driver of the Python script"""
     # Create the screen
@@ -82,6 +112,7 @@ def main() -> None:
     done = False
     clock = pygame.time.Clock()
     num_blocks = 100
+    num_enemies = 10
     score = 0
 
     pygame.mouse.set_visible(False)
@@ -89,6 +120,7 @@ def main() -> None:
     # Create groups to hold sprites
     all_sprites = pygame.sprite.Group()
     block_sprites = pygame.sprite.Group()
+    enemy_sprites = pygame.sprite.Group()
 
     # Create all the block sprites and add to block_sprites
     for i in range(num_blocks):
@@ -104,9 +136,17 @@ def main() -> None:
         block_sprites.add(block)
         all_sprites.add(block)
 
+   # Create enemy sprites
+    for i in range(num_enemies):
+        # Create an enemy
+        enemy = Enemy()
+        # add it to the sprites list( enemy_sprites and all_sprites)
+        enemy_sprites.add(enemy)
+        all_sprites.add(enemy)
+
     # Create the player block
     player = Player()
-        # Block(PALE_GOLD, 20, 15)
+    # Block(PALE_GOLD, 20, 15)
     # add the player to all_sprites group
     all_sprites.add(player)
 
