@@ -99,9 +99,26 @@ class Enemy(pygame.sprite.Sprite):
         self.x_vel = random.choice([-4, -3, 3, 4])
         self.y_vel = random.choice([-4, -3, 3, 4])
 
+    def update(self):
+        """calculate movement"""
+        self.rect.x += self.x_vel
+        self.rect.y += self.y_vel
 
-
-
+        # constrain the movement
+        # X-
+        if self.rect.left < 0:
+            self.rect.x = 0
+            self.x_vel = -self.x_vel  # bounces
+        if self.rect.right > SCREEN_WIDTH:
+            self.rect.right = SCREEN_WIDTH
+            self.x_vel = -self.x_vel
+        # Y-
+        if self.rect.y < 0:
+            self.rect.y = 0
+            self.y_vel = - self.y_vel
+        if self.rect.bottom > SCREEN_HEIGHT:
+            self.rect.bottom = SCREEN_HEIGHT
+            self.y_vel = -self.y_vel
 def main() -> None:
     """Driver of the Python script"""
     # Create the screen
@@ -162,7 +179,8 @@ def main() -> None:
 
         mouse_pos = pygame.mouse.get_pos()
         player.rect.x, player.rect.y = mouse_pos
-
+        # Update the location of all sprites
+        all_sprites.update()
         # Check all collisions between player and the blocks
         blocks_collided = pygame.sprite.spritecollide(player, block_sprites, True)
 
