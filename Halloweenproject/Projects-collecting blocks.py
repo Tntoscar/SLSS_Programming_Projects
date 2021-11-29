@@ -3,6 +3,7 @@
 # 2021 Version
 
 import random
+import time
 import pygame
 
 pygame.init()
@@ -130,9 +131,12 @@ def main() -> None:
     # Create some local variables that describe the environment
     done = False
     clock = pygame.time.Clock()
-    num_blocks = 200
+    num_blocks = 100
     num_enemies = 10
     score = 0
+    time_start = time.time()
+    time_invincible = 5
+    font = pygame.font.SysFont("Arial", 25)
 
     pygame.mouse.set_visible(False)
 
@@ -189,11 +193,27 @@ def main() -> None:
             score += 1
             print(f"Score: {score}")
 
+        # Update the location of all sprites
+        all_sprites.update()
+        # Check all collisions between player and the blocks
+        enemies_collided = pygame.sprite.spritecollide(player, enemy_sprites, False)
+        # set a time
+        if time.time() - time_start > time_invincible:
+            for enemy in enemies_collided:
+                done = True
+                print(f"Game Over")
         # ----------- DRAW THE ENVIRONMENT
         screen.fill(BLIZZARD_BLUE)      # fill with bgcolor
 
         # Draw all sprites
         all_sprites.draw(screen)
+
+        # Draw the score on the screen
+        screen.blit(
+            font.render(f"Score: {score}", True, BLACK),
+            (5, 5)
+
+        )
 
         # Update the screen
         pygame.display.flip()
