@@ -32,6 +32,9 @@ class Player(pygame.sprite.Sprite):
             representation of our Block
         rect: numerical representation of
             our Block [x, y, width, height]
+        hp: describes how much health our
+            player has
+
     """
     def __init__(self) -> None:
         # Call the superclass constructor
@@ -42,6 +45,13 @@ class Player(pygame.sprite.Sprite):
 
         # Based on the image, create a Rect for the block
         self.rect = self.image.get_rect()
+
+        # Initial health points
+        self.hp = 250
+
+    def hp_remaining(self) -> int:
+        """Return the percent of health remaining"""
+        return self.hp / 250
 
 
 class Block(pygame.sprite.Sprite):
@@ -96,9 +106,9 @@ class Enemy(pygame.sprite.Sprite):
             random.randrange(SCREEN_HEIGHT)
         )
 
-        # Define hte inital velocity
-        self.x_vel = random.choice([-4, -3, 3, 4])
-        self.y_vel = random.choice([-4, -3, 3, 4])
+        # Define the inital velocity
+        self.x_vel = random.choice([-2, -1, 1, 2])
+        self.y_vel = random.choice([-2, -1, 1, 2])
 
     def update(self):
         """calculate movement"""
@@ -132,7 +142,7 @@ def main() -> None:
     done = False
     clock = pygame.time.Clock()
     num_blocks = 100
-    num_enemies = 10
+    num_enemies = 5
     score = 0
     time_start = time.time()
     time_invincible = 5
@@ -186,12 +196,6 @@ def main() -> None:
         player.rect.x, player.rect.y = mouse_pos
         # Update the location of all sprites
         all_sprites.update()
-        # Check all collisions between player and the blocks
-        blocks_collided = pygame.sprite.spritecollide(player, block_sprites, True)
-
-        for block in blocks_collided:
-            score += 1
-            print(f"Score: {score}")
 
         # Update the location of all sprites
         all_sprites.update()
@@ -200,8 +204,14 @@ def main() -> None:
         # set a time
         if time.time() - time_start > time_invincible:
             for enemy in enemies_collided:
-                done = True
-                print(f"Game Over")
+                player.hp -= 1
+
+                # Check all collisions between player and the blocks
+            blocks_collided = pygame.sprite.spritecollide(player, block_sprites, True)
+
+            for block in blocks_collided:
+                score += 1
+
         # ----------- DRAW THE ENVIRONMENT
         screen.fill(BLIZZARD_BLUE)      # fill with bgcolor
 
@@ -214,6 +224,12 @@ def main() -> None:
             (5, 5)
 
         )
+        # Draw a health bar
+        # Draw the background rectangle
+        pygame.draw.rect(screen,GREEN, [580, 5, 115, 20])
+        # Draw the foreground rectangle which is the remaining health
+        life_remaining = 215 - int(215 * player.hp_remaining())
+        pygame.draw.rect(screen, BLUE, [580, 5, life_remaining, 20])
 
         # Update the screen
         pygame.display.flip()
