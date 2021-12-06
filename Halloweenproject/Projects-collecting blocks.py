@@ -151,6 +151,7 @@ def main() -> None:
     time_ended = 0.0
 
     endgame_messages = {
+        "start": "collect all the blocks to win",
         "win": "Congratulations, you won!",
         "Lose": "Sorry, you are just bad. Play again!",
     }
@@ -203,16 +204,34 @@ def main() -> None:
         if score == num_blocks:
             # Indicate to draw a message
             game_state = "won"
+
             # SET THE TIME THAT THE GAME WAS WON
-            if time_ended > 0:
+            if time_ended == 0:
                 time_ended = time.time()
             # Set parameters to keep the screen alive
             # wait 4 seconds to kill the screen
             if time.time() - time_ended >= endgame_cooldown:
                 done = True
-        # LOSE CONDITION - PLayer's hp goes below 0
+
         if player.hp_remaining() <= 0:
-            done = True
+            # Indicate to draw a message
+            game_state = "lost"
+
+            # SET THE TIME THAT THE GAME WAS WON
+            if time_ended == 0:
+                time_ended = time.time()
+            # Set parameters to keep the screen alive
+            # wait 4 seconds to kill the screen
+            if time.time() - time_ended >= endgame_cooldown:
+                done = True
+
+        if game_state == "won":
+            player.hp += 10000
+
+
+        # LOSE CONDITION - PLayer's hp goes below 0
+        # if player.hp_remaining() <= 0:
+            # done = True
 
         # ----------- CHANGE ENVIRONMENT
         # Process player movement based on mouse position
@@ -261,6 +280,19 @@ def main() -> None:
             screen.blit(
                 font.render(endgame_messages["win"], True, BLACK),
                 (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+            )
+
+        # If we've lose, draw the text on the screen
+        if game_state == "lost":
+            screen.blit(
+                font.render(endgame_messages["Lose"], True, BLACK),
+                (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+            )
+
+        if time_invincible == 5:
+            screen.blit(
+                font.render(endgame_messages["start"], True, BLACK),
+                (245, 60)
             )
 
         # Update the screen
