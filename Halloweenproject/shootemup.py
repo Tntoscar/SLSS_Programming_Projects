@@ -181,38 +181,11 @@ def main() -> None:
             if event.type == pygame.QUIT:
                 done = True
             if event.type == pygame.MOUSEBUTTONUP:
-                # we can't create a bullet when:
-                # initial cool down
-                # when there is three on the screen
                 if len(bullet_sprites) < 3 and time.time() - time_start > time_invincible:
                     bullet = Bullet(player.rect.midtop)
 
                     bullet_sprites.add(bullet)
                     all_sprites.add(bullet)
-
-        # End-game listener
-            # SET THE TIME THAT THE GAME WAS WON
-            if time_ended == 0:
-                time_ended = time.time()
-            # Set parameters to keep the screen alive
-            # wait 4 seconds to kill the screen
-            if time.time() - time_ended >= endgame_cooldown:
-                done = True
-
-        if player.hp_remaining() <= 0:
-            # Indicate to draw a message
-            game_state = "lost"
-
-            # SET THE TIME THAT THE GAME WAS WON
-            if time_ended == 0:
-                time_ended = time.time()
-            # Set parameters to keep the screen alive
-            # wait 4 seconds to kill the screen
-            if time.time() - time_ended >= endgame_cooldown:
-                done = True
-
-
-
 
          # LOSE CONDITION - PLayer's hp goes below 0
         if player.hp_remaining() <= 0:
@@ -236,8 +209,24 @@ def main() -> None:
             for enemy in enemies_collided:
                 player.hp -= 1
 
+        # check bullet collisions with enemies
+        for bullet in bullet_sprites:
+            enemies_bullet_collided = pygame.sprite.spritecollide(
+                bullet,
+                enemy_sprites,
+                True
+            )
+
+            # if the bullet has struck some enemy
+            if len(enemies_bullet_collided) > 0:
+                bullet.kill()
+                score += 1
+
+            if bullet.rect.y < 0:
+                bullet.kill()
+
         # ----------- DRAW THE ENVIRONMENT
-        screen.fill(BLIZZARD_BLUE)      # fill with bgcolor
+        screen.fill(RUST)      # fill with bgcolor
 
         # Draw all sprites
         all_sprites.draw(screen)
@@ -259,13 +248,6 @@ def main() -> None:
         if game_state == "won":
             screen.blit(
                 font.render(endgame_messages["win"], True, BLACK),
-                (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-            )
-
-        # If we've lose, draw the text on the screen
-        if game_state == "lost":
-            screen.blit(
-                font.render(endgame_messages["Lose"], True, BLACK),
                 (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
             )
 
