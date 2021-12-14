@@ -145,6 +145,10 @@ def main() -> None:
     endgame_cooldown = 5        # seconds
     time_ended = 0.0
 
+
+    with open("./data/shootemup_highscore.txt") as f:
+        high_score = int(f.readline().strip())
+
     endgame_messages = {
         "win": "Congratulations, you won!",
         "Lose": "Sorry, you are just bad. Play again!",
@@ -170,7 +174,6 @@ def main() -> None:
 
     # Create the player block
     player = Player()
-    # Block(PALE_GOLD, 20, 15)
     # add the player to all_sprites group
     all_sprites.add(player)
 
@@ -187,7 +190,7 @@ def main() -> None:
                     bullet_sprites.add(bullet)
                     all_sprites.add(bullet)
 
-         # LOSE CONDITION - PLayer's hp goes below 0
+        # LOSE CONDITION - PLayer's hp goes below 0
         if player.hp_remaining() <= 0:
             done = True
 
@@ -197,6 +200,19 @@ def main() -> None:
         mouse_pos = pygame.mouse.get_pos()
         player.rect.x = mouse_pos[0] - player.rect.width / 2
         player.rect.y = mouse_pos[1] - player.rect.height / 2
+
+        # Check numbers of enemies currently on the screen
+        if len(enemy_sprites) < 1:
+            # Create enemy sprites
+            for i in range(num_enemies):
+                # Create an enemy
+                enemy = Enemy()
+
+                # add it to the sprites list( enemy_sprites and all_sprites)
+                enemy_sprites.add(enemy)
+                all_sprites.add(enemy)
+
+            num_enemies += 5
 
         # Update the location of all sprites
         all_sprites.update()
@@ -232,9 +248,16 @@ def main() -> None:
         all_sprites.draw(screen)
 
         # Draw the score on the screen
+        # Draw the high score
         screen.blit(
             font.render(f"Score: {score}", True, BLACK),
             (5, 5)
+
+        )
+
+        screen.blit(
+            font.render(f"high score: {high_score}", True, BLACK),
+            (5, 25)
 
         )
         # Draw a health bar
@@ -256,6 +279,18 @@ def main() -> None:
 
         # ----------- CLOCK TICK
         clock.tick(75)
+
+    # Clean-up
+
+    # Update high score if the current score is the highest
+    with open("./data/shootemup_highscore.txt") as f:
+        high_score = int(f.readline().strip())
+
+    with open("./date/shootemup_highscore.txt", "w") as f:
+        if score > high_score:
+            f.write(str(score))
+        else:
+            f.write(str(high_score))
 
 
 if __name__ == "__main__":
