@@ -40,9 +40,7 @@ class Player(pygame.sprite.Sprite):
         # Call the superclass constructor
         super().__init__()
 
-        # Create the image of the block
         self.image = pygame.image.load("./images/charmender.png")
-
         # Based on the image, create a Rect for the block
         self.rect = self.image.get_rect()
 
@@ -257,7 +255,7 @@ def main() -> None:
                 score += 1
 
         # ----------- DRAW THE ENVIRONMENT
-        screen.fill(BLIZZARD_BLUE)      # fill with bgcolor
+        screen.fill(BLIZZARD_BLUE)
 
         # Draw all sprites
         all_sprites.draw(screen)
