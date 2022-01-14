@@ -37,7 +37,6 @@ class Player(pygame.sprite.Sprite):
 
     """
     def __init__(self) -> None:
-        # Call the superclass constructor
         super().__init__()
 
         self.image = pygame.image.load("./images/charmender.png")
@@ -227,22 +226,19 @@ def main() -> None:
             player.hp += 10000
 
 
-        # LOSE CONDITION - PLayer's hp goes below 0
-        # if player.hp_remaining() <= 0:
-            # done = True
-
         # ----------- CHANGE ENVIRONMENT
         # Process player movement based on mouse position
 
         mouse_pos = pygame.mouse.get_pos()
-        player.rect.x, player.rect.y = mouse_pos
-        # Update the location of all sprites
-        all_sprites.update()
+        player.rect.x = mouse_pos[0] - player.rect.width / 2
+        player.rect.y = mouse_pos[1] - player.rect.height / 2
 
         # Update the location of all sprites
         all_sprites.update()
+
         # Check all collisions between player and the blocks
         enemies_collided = pygame.sprite.spritecollide(player, enemy_sprites, False)
+
         # set a time
         if time.time() - time_start > time_invincible:
             for enemy in enemies_collided:
