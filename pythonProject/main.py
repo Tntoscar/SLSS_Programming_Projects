@@ -88,13 +88,13 @@ class Coconut(pygame.sprite.Sprite):
             self.kill()
 
 
-class Arrow(pygame.sprite.Sprite):
+class Slime(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
 
         # Initialize Sprite
-        self.image = pygame.image.load("arrow.png")
-        self.image = pygame.transform.scale(self.image, (50, 100))
+        self.image = pygame.image.load("pyro_slime.webp")
+        self.image = pygame.transform.scale(self.image, (100, 100))
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(15, WIDTH - self.rect.width)
         self.rect.y = 5
@@ -102,6 +102,10 @@ class Arrow(pygame.sprite.Sprite):
         # Vector
         self.vel_y = 8
 
+    def update(self):
+        self.rect.y += self.vel_y
+        if self.rect.y == HEIGHT - self.rect.height:
+            self.kill()
 
 def main():
     pygame.init()
@@ -119,7 +123,7 @@ def main():
     arrow_spawn_time = random.randrange(2000)
     last_time_banana_spawned = pygame.time.get_ticks()
     last_time_coconut_spawned = pygame.time.get_ticks()
-    last_time_arrow_spawned = pygame.time.get_ticks()
+    last_time_Slime_spawned = pygame.time.get_ticks()
     level_up = 0
     high_score = 0
     score_value = 0
@@ -132,7 +136,7 @@ def main():
     all_sprites_group = pygame.sprite.RenderUpdates()
     bananas_group = pygame.sprite.Group()
     coconuts_group = pygame.sprite.Group()
-    arrow_group = pygame.sprite.Group()
+    Slime_group = pygame.sprite.Group()
 
     # ----- Player
     player = Player()
@@ -200,18 +204,17 @@ def main():
                 all_sprites_group.add(coconut)
                 coconuts_group.add(coconut)
 
-            if pygame.time.get_ticks() > last_time_arrow_spawned + arrow_spawn_time:
-                last_time_arrow_spawned = pygame.time.get_ticks()
-                # spawn arrow
-                arrow = Arrow()
-                all_sprites_group.add(arrow)
-                arrow_group.add(arrow)
-
+            # slime spawn
+            if pygame.time.get_ticks() > last_time_Slime_spawned + arrow_spawn_time:
+                last_time_Slime_spawned = pygame.time.get_ticks()
+                # spawn slime
+                slime = Slime()
+                all_sprites_group.add(slime)
+                Slime_group.add(slime)
 
             # check if banana hits ground
             for banana in bananas_group:
                 if banana.rect.y >= HEIGHT - banana.rect.height - 7:
-                    lives_value -= 1
                     banana.kill()
 
                 # Player collision
@@ -223,7 +226,6 @@ def main():
             # check if coconut hits ground
             for coconut in coconuts_group:
                 if coconut.rect.y >= HEIGHT - coconut.rect.height - 11:
-                    lives_value -= 1
                     coconut.kill()
 
                 # Player collision
@@ -231,6 +233,11 @@ def main():
                 if len(coconut_collected) > 0:
                     coconut.kill()
                     score_value += 3
+
+            Slime_collected = pygame.sprite.spritecollide(player, Slime_group, True)
+            if len(Slime_collected) > 0:
+                Slime.kill()
+                score_value -= 1
 
             # decrease spawn time
             if score_value >= level_up:
