@@ -129,17 +129,14 @@ def main():
     high_score = 0
     score_value = 0
     game_over = True
-    endgame_cooldown = 5
-    time_start = time.time()
-    time_ended = 0.0
-    game_state = "running"
-
-    # endgame message
-    endgame_message = {
-        "Game_over": f"The game has ended, your score is {score_value}"
-    }
+    timer = 10
 
     font = pygame.font.SysFont("Arial", 25)
+
+    # --- Endgame message
+    endgame_message = {
+        "end": "Thank you for playing this game, your score is {score_value}"
+    }
 
     # ----- Sprites
     all_sprites_group = pygame.sprite.RenderUpdates()
@@ -167,14 +164,6 @@ def main():
             for banana in bananas_group:
                 banana.kill()
             game_over = False
-
-            # set a end game timer
-            if time_ended == 0:
-                time_ended = time.time()
-
-            # Wait 5 seconds to kill the screen
-            if time.time() - time_ended >= endgame_cooldown:
-                done = True
 
         # -- Event Handler
         for events in pygame.event.get():
@@ -263,11 +252,6 @@ def main():
                 banana_spawn_time -= 60
                 level_up += 12
 
-            # Game over
-            #if lives_value == 0:
-                #game_over = True
-
-
 
         # ----- DRAW
         screen.blit(background_image, (0, 0))
@@ -276,18 +260,22 @@ def main():
         # ----- UPDATE
         pygame.display.update(dirty_rectangles)
         draw_text(screen, ("Score: " + str(score_value)), 36, 95, 10)
+        draw_text(screen, ("Timer: " + str(timer)), 36, 240, 40)
 
-        if game_state == "Game_over":
+        timer -= 0.015
+
+        if timer <= 0:
+            game_over = True
             screen.blit(
-                font.render(endgame_message["Game_over"], True, BLACK),
-                (WIDTH / 2, HEIGHT / 2)
+                font.render(endgame_message["end"], True, BLACK),
+                (WIDTH / 4, HEIGHT / 4)
             )
 
+        # Update the screen
         pygame.display.flip()
+
+        # ---- clock tick
         clock.tick(60)
-
-
-
 
         # If the player gets near the right side, shift the world left (-x)
         # subtract 25 to add a bit of a barrier
