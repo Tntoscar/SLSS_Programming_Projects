@@ -3,6 +3,7 @@
 # interpretation by Oscar Yu
 import pygame
 import random
+import time
 
 # ----- CONSTANTS
 BLACK = (0, 0, 0)
@@ -120,17 +121,25 @@ def main():
     clock = pygame.time.Clock()
     banana_spawn_time = 1000
     coconut_spawn_time = random.randrange(8000, 12000)
-    arrow_spawn_time = random.randrange(2000)
+    slime_spawn_time = 1000
     last_time_banana_spawned = pygame.time.get_ticks()
     last_time_coconut_spawned = pygame.time.get_ticks()
     last_time_Slime_spawned = pygame.time.get_ticks()
     level_up = 0
     high_score = 0
     score_value = 0
-    lives_value = 0
     game_over = True
+    endgame_cooldown = 5
+    time_start = time.time()
+    time_ended = 0.0
+    game_state = "running"
 
-    # Game Over Screen
+    # endgame message
+    endgame_message = {
+        "Game_over": f"The game has ended, your score is {score_value}"
+    }
+
+    font = pygame.font.SysFont("Arial", 25)
 
     # ----- Sprites
     all_sprites_group = pygame.sprite.RenderUpdates()
@@ -151,7 +160,6 @@ def main():
             # reset game
             banana_spawn_time = 1000
             level_up = 10
-            lives_value = 3
             score_value = 0
             player.vel_x = 0
             player.rect.x = WIDTH / 2 - 97.5
@@ -159,6 +167,14 @@ def main():
             for banana in bananas_group:
                 banana.kill()
             game_over = False
+
+            # set a end game timer
+            if time_ended == 0:
+                time_ended = time.time()
+
+            # Wait 5 seconds to kill the screen
+            if time.time() - time_ended >= endgame_cooldown:
+                done = True
 
         # -- Event Handler
         for events in pygame.event.get():
@@ -205,7 +221,7 @@ def main():
                 coconuts_group.add(coconut)
 
             # slime spawn
-            if pygame.time.get_ticks() > last_time_Slime_spawned + arrow_spawn_time:
+            if pygame.time.get_ticks() > last_time_Slime_spawned + slime_spawn_time:
                 last_time_Slime_spawned = pygame.time.get_ticks()
                 # spawn slime
                 slime = Slime()
@@ -234,10 +250,13 @@ def main():
                     coconut.kill()
                     score_value += 3
 
-            Slime_collected = pygame.sprite.spritecollide(player, Slime_group, True)
-            if len(Slime_collected) > 0:
-                Slime.kill()
-                score_value -= 1
+            for slime in Slime_group:
+                if slime.rect.y >= HEIGHT - slime.rect.height - 11:
+                    slime.kill()
+
+                Slime_collected = pygame.sprite.spritecollide(player, Slime_group, True)
+                if len(Slime_collected) > 0:
+                    score_value -= 1
 
             # decrease spawn time
             if score_value >= level_up:
@@ -245,8 +264,8 @@ def main():
                 level_up += 12
 
             # Game over
-            if lives_value == 0:
-                game_over = True
+            #if lives_value == 0:
+                #game_over = True
 
 
 
@@ -257,9 +276,18 @@ def main():
         # ----- UPDATE
         pygame.display.update(dirty_rectangles)
         draw_text(screen, ("Score: " + str(score_value)), 36, 95, 10)
-        draw_text(screen, ("Lives: " + str(lives_value)), 36, 1190, 10)
+
+        if game_state == "Game_over":
+            screen.blit(
+                font.render(endgame_message["Game_over"], True, BLACK),
+                (WIDTH / 2, HEIGHT / 2)
+            )
+
         pygame.display.flip()
         clock.tick(60)
+
+
+
 
         # If the player gets near the right side, shift the world left (-x)
         # subtract 25 to add a bit of a barrier
@@ -276,3 +304,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
