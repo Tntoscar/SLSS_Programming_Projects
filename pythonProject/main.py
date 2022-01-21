@@ -134,6 +134,9 @@ def main():
 
     font = pygame.font.SysFont("Arial", 25)
 
+    with open("highscore.txt") as f:
+        high_score = int(f.readline().strip())
+
     # --- Endgame message
     endgame_message = {
         "end": "Thank you for playing this game"
@@ -143,7 +146,7 @@ def main():
     all_sprites_group = pygame.sprite.RenderUpdates()
     bananas_group = pygame.sprite.Group()
     coconuts_group = pygame.sprite.Group()
-    Slime_group = pygame.sprite.Group()
+    slime_group = pygame.sprite.Group()
 
     # ----- Player
     player = Player()
@@ -151,18 +154,20 @@ def main():
 
     # ----- MAIN LOOP
     while not done:
-        if score_value > high_score:
-            high_score = score_value
-            # reset game
-            banana_spawn_time = 1000
-            level_up = 10
-            score_value = 0
-            player.vel_x = 0
-            player.rect.x = WIDTH / 2 - 97.5
-            player.rect.y = HEIGHT - player.rect.height - 10
-            for banana in bananas_group:
-                banana.kill()
-            game_over = False
+        if game_over:
+            # check to see if highscore was beaten
+            if score_value > high_score:
+                high_score = score_value
+                # reset game
+                banana_spawn_time = 1000
+                level_up = 10
+                score_value = 0
+                player.vel_x = 0
+                player.rect.x = WIDTH / 2 - 97.5
+                player.rect.y = HEIGHT - player.rect.height - 10
+                for banana in bananas_group:
+                    banana.kill()
+                game_over = False
 
         # -- Event Handler
         for events in pygame.event.get():
@@ -214,7 +219,7 @@ def main():
                 # spawn slime
                 slime = Slime()
                 all_sprites_group.add(slime)
-                Slime_group.add(slime)
+                slime_group.add(slime)
 
             # check if banana hits ground
             for banana in bananas_group:
@@ -238,12 +243,14 @@ def main():
                     coconut.kill()
                     score_value += 3
 
-            for slime in Slime_group:
+            # check if slime hits ground
+            for slime in slime_group:
                 if slime.rect.y >= HEIGHT - slime.rect.height - 11:
                     slime.kill()
 
-                Slime_collected = pygame.sprite.spritecollide(player, Slime_group, True)
-                if len(Slime_collected) > 0:
+                # player collision
+                slime_collected = pygame.sprite.spritecollide(player, slime_group, True)
+                if len(slime_collected) > 0:
                     score_value -= 1
 
             # decrease spawn time
@@ -259,6 +266,7 @@ def main():
         pygame.display.update(dirty_rectangles)
         draw_text(screen, ("Score: " + str(score_value)), 36, 95, 10)
         draw_text(screen, ("Timer: " + str(timer)), 36, 240, 40)
+        draw_text(screen, "High Score: " + str(high_score), 36, 125, 70)
 
        # TIME COOL DOWN
         timer -= 0.015
@@ -285,6 +293,12 @@ def main():
         # add 25 to add a bit of a barrier
         if player.rect.left < 25:
             player.rect.left = 25
+
+        with open("highscore.txt", "w") as f:
+            if score_value > high_score:
+                f.write(str(score_value))
+            else:
+                f.write(str(high_score))
 
     pygame.quit()
 
