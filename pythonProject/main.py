@@ -1,9 +1,9 @@
 # Final Programming Project
 # Original is "Jungle Jumpin'" by Scott Elliott
-# interpretation by Oscar Yu
+# interpretation of it "George's Jungle jam"
+# Further interpretation by Oscar Yu
 import pygame
 import random
-import time
 
 # ----- CONSTANTS
 BLACK = (0, 0, 0)
@@ -108,6 +108,7 @@ class Slime(pygame.sprite.Sprite):
         if self.rect.y == HEIGHT - self.rect.height:
             self.kill()
 
+
 def main():
     pygame.init()
 
@@ -135,7 +136,7 @@ def main():
 
     # --- Endgame message
     endgame_message = {
-        "end": "Thank you for playing this game, your score is {score_value}"
+        "end": "Thank you for playing this game"
     }
 
     # ----- Sprites
@@ -150,10 +151,8 @@ def main():
 
     # ----- MAIN LOOP
     while not done:
-        if game_over:
-            # check to see if highscore was beaten
-            if score_value > high_score:
-                high_score = score_value
+        if score_value > high_score:
+            high_score = score_value
             # reset game
             banana_spawn_time = 1000
             level_up = 10
@@ -252,7 +251,6 @@ def main():
                 banana_spawn_time -= 60
                 level_up += 12
 
-
         # ----- DRAW
         screen.blit(background_image, (0, 0))
         dirty_rectangles = all_sprites_group.draw(screen)
@@ -262,6 +260,7 @@ def main():
         draw_text(screen, ("Score: " + str(score_value)), 36, 95, 10)
         draw_text(screen, ("Timer: " + str(timer)), 36, 240, 40)
 
+       # TIME COOL DOWN
         timer -= 0.015
 
         if timer <= 0:
