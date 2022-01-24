@@ -130,7 +130,7 @@ def main():
     high_score = 0
     score_value = 0
     game_over = True
-    timer = 10
+    timer = 60
 
     font = pygame.font.SysFont("Arial", 25)
 
@@ -159,15 +159,15 @@ def main():
             if score_value > high_score:
                 high_score = score_value
                 # reset game
-                banana_spawn_time = 1000
-                level_up = 10
-                score_value = 0
-                player.vel_x = 0
-                player.rect.x = WIDTH / 2 - 97.5
-                player.rect.y = HEIGHT - player.rect.height - 10
-                for banana in bananas_group:
-                    banana.kill()
-                game_over = False
+            banana_spawn_time = 1000
+            level_up = 10
+            score_value = 0
+            player.vel_x = 0
+            player.rect.x = WIDTH / 2 - 97.5
+            player.rect.y = HEIGHT - player.rect.height - 10
+            for banana in bananas_group:
+                banana.kill()
+            game_over = False
 
         # -- Event Handler
         for events in pygame.event.get():
