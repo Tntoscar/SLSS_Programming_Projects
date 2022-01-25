@@ -268,7 +268,7 @@ def main():
         draw_text(screen, ("Timer: " + str(timer)), 36, 240, 40)
         draw_text(screen, "High Score: " + str(high_score), 36, 125, 70)
 
-       # TIME COOL DOWN
+       #TIME COOL DOWN
         timer -= 0.015
 
         if timer <= 0:
@@ -277,6 +277,8 @@ def main():
                 font.render(endgame_message["end"], True, BLACK),
                 (WIDTH / 4, HEIGHT / 4)
             )
+            if timer <= -5:
+                done = True
 
         # Update the screen
         pygame.display.flip()

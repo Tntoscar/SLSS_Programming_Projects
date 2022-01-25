@@ -1,0 +1,7 @@
+
+left arrow to move left
+right arrow to move right
+shift to dash
+slimes make u lose point
+gems worth 1 point
+golden shrimp balls worth 2
